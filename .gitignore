@@ -110,7 +110,7 @@ postgres_data/
 # weaviate/
 # agent/dbData/
 # agent/weaviate/
-# agent/postgres_data/
+agent/postgres_data/
 
 # ============================================
 # IDE & Editors
