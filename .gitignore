@@ -100,7 +100,7 @@ out/
 # *.db
 # *.sqlite
 # *.sqlite3
-# postgres_data/
+postgres_data/
 # dbData/
 # data/
 # *.sql.backup
@@ -110,6 +110,7 @@ out/
 # weaviate/
 # agent/dbData/
 # agent/weaviate/
+# agent/postgres_data/
 
 # ============================================
 # IDE & Editors
