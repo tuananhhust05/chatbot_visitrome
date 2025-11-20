@@ -50,7 +50,7 @@ services:
     build: .
     container_name: agent_travel_app
     ports:
-      - "8501:8501"
+      - "8511:8501"
     volumes:
       - ./uploads:/app/uploads
       - ./data:/app/data
