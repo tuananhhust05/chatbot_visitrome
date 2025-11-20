@@ -1,0 +1,71 @@
+services:
+
+  postgres_agent:
+    image: postgres:17
+    container_name: agent_travel_pg
+    ports:
+      - "${POSTGRES_PORT_AGENT}:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER_AGENT}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD_AGENT}
+      POSTGRES_DB: agent_db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_AGENT} -d ${POSTGRES_DB_AGENT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 10G
+          cpus: '2'
+  
+  weaviate:
+    command:
+    - --host
+    - 0.0.0.0
+    - --port
+    - '8080'
+    - --scheme
+    - http
+    image: cr.weaviate.io/semitechnologies/weaviate:1.27.3
+    container_name: agent_travel_wv
+    ports:
+    - 8099:8080
+    - 50099:50051
+    volumes:
+    - ./dbData/weaviate:/var/lib/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_API_BASED_MODULES: 'true'
+      CLUSTER_HOSTNAME: 'node1'
+  
+  app:
+    build: .
+    container_name: agent_travel_app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./data:/app/data
+      - ./:/app
+    depends_on:
+      postgres_agent:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+# volumes:
+#   postgres_data:
+  
+networks:
+  default:
+    driver: bridge
+
+

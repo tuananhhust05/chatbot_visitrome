@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendly User Info and Scheduled Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding-top: 20px;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            padding: 20px;
+            text-align: center;
+            overflow-y: auto;
+            max-height: 90vh;
+        }
+        .avatar {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        .name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .email, .timezone, .locale {
+            color: #555;
+            margin: 5px 0;
+        }
+        .event {
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            margin: 10px 0;
+            padding: 10px;
+            text-align: left;
+        }
+        .event h3 {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+        .event p {
+            margin: 5px 0;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .loading {
+            font-size: 1.2em;
+            color: #999;
+        }
+    </style>
+    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+</head>
+<body>
+    <div class="container">
+        <div id="loading" class="loading">Loading...</div>
+        <div id="user-info" style="display: none;">
+            <img id="avatar" class="avatar" src="" alt="Avatar">
+            <div id="name" class="name"></div>
+            <div id="email" class="email"></div>
+            <div id="timezone" class="timezone"></div>
+            <div id="locale" class="locale"></div>
+            <button id="profile-btn" class="btn">View Profile</button>
+        </div>
+        <div id="events-container" style="display: none;">
+            <h2>Scheduled Events</h2>
+            <div id="events-list"></div>
+        </div>
+    </div>
+    {% for event in event_data %}
+       <div class="calendly-inline-widget" data-url="{{ event.scheduling_url }}" style="min-width:320px;height:700px;"></div>
+    {% endfor %}
+    <script>
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Function to set a cookie
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+            document.cookie = name + "=" + value + ";expires=" + expires.toUTCString() + ";path=/";
+        }
+
+        // Function to get a cookie by name
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Function to fetch the access token and set it in a cookie
+        async function fetchAccessToken(code) {
+            const apiUrl = `https://traco.asia/webhook/calendly/auth/getaccesstoken/8386/${code}`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`API call failed: ${response.statusText}`);
+                }
+                const data = await response.json();
+                console.log(data.token.access_token)
+                try{
+                    setCookie('access_token_calendly', JSON.parse(data.token).access_token, 7); // Cookie expires in 7 days
+                }
+                catch(e){
+                    //console.log("Access token set in cookie:", JSON.parse(data.token).access_token);
+                    setCookie('access_token_calendly', data.token.access_token, 7); // Cookie expires in 7 days
+                }
+                
+               
+            } catch (error) {
+                console.error("Error fetching access token:", error);
+            }
+        }
+
+        // Function to fetch user data from Calendly API
+        async function fetchUserData() {
+            const accessToken = getCookie('access_token_calendly');
+            if (!accessToken) {
+                console.error("Access token not found in cookies");
+                return;
+            }
+
+            const url = 'https://api.calendly.com/users/me';
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const data = await response.json();
+                displayUserInfo(data.resource);
+
+                // Fetch scheduled events after user data
+                await fetchScheduledEvents(data.resource);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                document.getElementById('loading').textContent = 'Failed to load user data';
+            }
+        }
+
+        // Function to fetch scheduled events using user and organization information
+        async function fetchScheduledEvents(user) {
+            const accessToken = getCookie('access_token_calendly');
+            if (!accessToken) {
+                console.error("Access token not found in cookies");
+                return;
+            }
+
+            const url = `https://api.calendly.com/scheduled_events?organization=${user.current_organization}&user=${user.uri}`;
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch scheduled events');
+                }
+
+                const data = await response.json();
+                displayScheduledEvents(data.collection);
+            } catch (error) {
+                console.error("Error fetching scheduled events:", error);
+                document.getElementById('loading').textContent = 'Failed to load events';
+            }
+        }
+
+        // Function to display the user data in the UI
+        function displayUserInfo(user) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('user-info').style.display = 'block';
+
+            // Set the user data
+            document.getElementById('avatar').src = user.avatar_url || 'https://via.placeholder.com/100';
+            document.getElementById('name').textContent = user.name;
+            document.getElementById('email').textContent = `Email: ${user.email}`;
+            document.getElementById('timezone').textContent = `Timezone: ${user.timezone}`;
+            document.getElementById('locale').textContent = `Locale: ${user.locale}`;
+
+            // Update profile button to redirect to user's Calendly URL
+            const profileBtn = document.getElementById('profile-btn');
+            profileBtn.onclick = () => {
+                window.open(user.scheduling_url, '_blank');
+            };
+        }
+
+        // Function to display the scheduled events in the UI
+        function displayScheduledEvents(events) {
+            document.getElementById('events-container').style.display = 'block';
+            const eventsList = document.getElementById('events-list');
+            eventsList.innerHTML = '';
+
+            events.forEach(event => {
+                const eventElement = document.createElement('div');
+                eventElement.classList.add('event');
+
+                const startTime = new Date(event.start_time).toLocaleString();
+                const endTime = new Date(event.end_time).toLocaleString();
+
+                eventElement.innerHTML = `
+                    <h3>${event.name}</h3>
+                    <p><strong>Start Time:</strong> ${startTime}</p>
+                    <p><strong>End Time:</strong> ${endTime}</p>
+                    <p><strong>Calendar:</strong> ${event.calendar_event.kind}</p>
+                `;
+
+                eventsList.appendChild(eventElement);
+            });
+        }
+
+        // Main execution when the page loads
+        window.onload = async function() {
+            const code = getUrlParameter('code');
+            console.log('Code parameter:', code);
+
+            if (code) {
+                // Fetch the access token first and set it in the cookie
+                await fetchAccessToken(code);
+
+                // Once the token is set, fetch user data
+                await fetchUserData();
+            } else {
+                console.error("No 'code' parameter found in the URL");
+                document.getElementById('loading').textContent = "No code found. Please provide a valid code.";
+            }
+        };
+    </script>
+    
+    <!-- handle list page for scheduling  -->
+    <script>
+        // Function to fetch the access token and set it in a cookie
+        
+
+    </script>
+    <!-- <div class="calendly-inline-widget" data-url="https://calendly.com/tuananhhust05/new-meeting-5" style="min-width:320px;height:700px;"></div> -->
+
+<!-- Calendly inline widget end -->
+</body>
+</html>

@@ -1,0 +1,15 @@
+
+misc/
+__pycache__/
+.vscode/
+.venv/
+dbData/
+data/
+todelete/
+
+.cfg
+.env
+
+ngrok_recovery_codes.txt
+*.exe
+*.log

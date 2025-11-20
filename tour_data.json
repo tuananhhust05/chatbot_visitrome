@@ -1,0 +1,120 @@
+[
+    {
+      "country": "Italy",
+      "city": "Rome",
+      "tour_id": "rome_tour_001",
+      "tour_name": "Ancient Rome Highlights Tour",
+      "provider": {
+        "name": "Roma Heritage Tours",
+        "website": "https://example.com/roma-heritage",
+        "contact_email": "info@romaheritage.com"
+      },
+      "items": [
+        {
+          "location_name": "Colosseum",
+          "description": "Guided skip-the-line visit to the iconic Roman amphitheatre.",
+          "duration_minutes": 60
+        },
+        {
+          "location_name": "Roman Forum",
+          "description": "Walk through the heart of Ancient Rome with a professional guide.",
+          "duration_minutes": 45
+        },
+        {
+          "location_name": "Palatine Hill",
+          "description": "Panoramic views of the ruins and ancient palaces.",
+          "duration_minutes": 45
+        }
+      ]
+    },
+    {
+      "country": "Italy",
+      "city": "Rome",
+      "tour_id": "rome_tour_002",
+      "tour_name": "Vatican Museums & Sistine Chapel Tour",
+      "provider": {
+        "name": "Vatican City Guided Experiences",
+        "website": "https://example.com/vatican-guided",
+        "contact_email": "support@vaticanguided.com"
+      },
+      "items": [
+        {
+          "location_name": "Vatican Museums",
+          "description": "Visit the vast collection of art and historical artifacts.",
+          "duration_minutes": 90
+        },
+        {
+          "location_name": "Sistine Chapel",
+          "description": "Admire Michelangelo’s ceiling masterpiece.",
+          "duration_minutes": 30
+        },
+        {
+          "location_name": "St. Peter’s Basilica",
+          "description": "Explore one of the world's largest and most famous churches.",
+          "duration_minutes": 60
+        }
+      ]
+    },
+    {
+      "country": "Japan",
+      "city": "Tokyo",
+      "tour_id": "tokyo_tour_001",
+      "tour_name": "Tokyo Landmarks Full-Day Tour",
+      "provider": {
+        "name": "Tokyo Discovery Travel",
+        "website": "https://example.com/tokyo-discovery",
+        "contact_email": "contact@tokyodiscovery.jp"
+      },
+      "items": [
+        {
+          "location_name": "Senso-ji Temple",
+          "description": "Tokyo’s oldest and most significant Buddhist temple.",
+          "duration_minutes": 60
+        },
+        {
+          "location_name": "Meiji Shrine",
+          "description": "A peaceful Shinto sanctuary in the heart of Tokyo.",
+          "duration_minutes": 45
+        },
+        {
+          "location_name": "Shibuya Crossing",
+          "description": "The famous scramble crossing and surrounding shopping area.",
+          "duration_minutes": 30
+        },
+        {
+          "location_name": "Tokyo Tower",
+          "description": "Scenic view of Tokyo from the observation deck.",
+          "duration_minutes": 45
+        }
+      ]
+    },
+    {
+      "country": "Japan",
+      "city": "Tokyo",
+      "tour_id": "tokyo_tour_002",
+      "tour_name": "Tsukiji Market Food Experience",
+      "provider": {
+        "name": "Tsukiji Gourmet Walks",
+        "website": "https://example.com/tsukiji-gourmet",
+        "contact_email": "hello@tsukijigourmet.jp"
+      },
+      "items": [
+        {
+          "location_name": "Tsukiji Outer Market",
+          "description": "Taste local delicacies including sushi, tamagoyaki, and wagyu skewers.",
+          "duration_minutes": 60
+        },
+        {
+          "location_name": "Fresh Sushi Workshop",
+          "description": "Watch skilled chefs prepare fresh sushi and learn basics.",
+          "duration_minutes": 45
+        },
+        {
+          "location_name": "Street Food Alleys",
+          "description": "Sample traditional snacks like mochi and matcha desserts.",
+          "duration_minutes": 45
+        }
+      ]
+    }
+  ]
+  

@@ -1,0 +1,67 @@
+[
+    {
+      "id": "rome_hotel_001",
+      "city": "Rome",
+      "country": "Italy",
+      "name": "Hotel Artemide",
+      "price_range": "$160–$240 per night",
+      "des": "A stylish 4-star hotel located on Via Nazionale, known for its rooftop restaurant and modern rooms."
+    },
+    {
+      "id": "rome_hotel_002",
+      "city": "Rome",
+      "country": "Italy",
+      "name": "NH Collection Roma Fori Imperiali",
+      "price_range": "$280–$400 per night",
+      "des": "A luxury 5-star hotel overlooking the Roman Forum, offering exceptional city views and premium service."
+    },
+    {
+      "id": "rome_hotel_003",
+      "city": "Rome",
+      "country": "Italy",
+      "name": "Hotel Barocco",
+      "price_range": "$190–$260 per night",
+      "des": "A boutique hotel near Piazza Barberini with elegant rooms and a classic Roman atmosphere."
+    },
+    {
+      "id": "rome_hotel_004",
+      "city": "Rome",
+      "country": "Italy",
+      "name": "The Hive Hotel",
+      "price_range": "$120–$180 per night",
+      "des": "A modern 4-star hotel close to Termini Station, featuring a spacious rooftop terrace and contemporary interiors."
+    },
+    {
+      "id": "tokyo_hotel_001",
+      "city": "Tokyo",
+      "country": "Japan",
+      "name": "Park Hotel Tokyo",
+      "price_range": "$180–$260 per night",
+      "des": "A stylish 4-star hotel in Shiodome known for its art-themed rooms and panoramic views of Tokyo."
+    },
+    {
+      "id": "tokyo_hotel_002",
+      "city": "Tokyo",
+      "country": "Japan",
+      "name": "The Prince Park Tower Tokyo",
+      "price_range": "$260–$400 per night",
+      "des": "A luxury 5-star hotel in Minato offering large rooms, fine dining, and views of Tokyo Tower."
+    },
+    {
+      "id": "tokyo_hotel_003",
+      "city": "Tokyo",
+      "country": "Japan",
+      "name": "Hotel Gracery Shinjuku",
+      "price_range": "$140–$220 per night",
+      "des": "A modern hotel in Shinjuku famous for its Godzilla-themed decor and convenient access to nightlife."
+    },
+    {
+      "id": "tokyo_hotel_004",
+      "city": "Tokyo",
+      "country": "Japan",
+      "name": "Tokyu Stay Shibuya",
+      "price_range": "$110–$170 per night",
+      "des": "A mid-range hotel in Shibuya featuring practical rooms with kitchenettes, ideal for longer stays."
+    }
+  ]
+  

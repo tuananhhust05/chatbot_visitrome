@@ -1,0 +1,112 @@
+stages:
+  - gitVersion
+  - build_harbor
+  - ssh_deploy
+
+############# NOTICE #################
+## Kubernetes runner don't support
+## overlay2 storage driver while
+## using dind, so we use AWS runner
+## to build and push docker image
+############# END NOTICE #############
+Fetch:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "feat/agent-optimize"'
+      when: on_success
+    - when: never
+  stage: gitVersion
+  image:
+    name: $DOCKER_URL/du/gitversion:5.6.6
+    entrypoint: ["/bin/sh", "-c"]
+  variables:
+    GIT_DEPTH: 0
+  script:
+    - export SEM_VERSION=$(/tools/dotnet-gitversion /overrideconfig tag-prefix=custom assembly-versioning-format=="{Major}.{Minor}.{Patch}"  /showvariable semVer)
+    - echo "SEM_VERSION=$SEM_VERSION" >> build.env
+    - echo $SEM_VERSION
+  artifacts:
+    reports:
+      dotenv: build.env
+    expire_in: 15 mins
+  tags:
+    - kubernetes
+
+Build Agent Supporter Docker Image:
+  stage: build_harbor
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "feat/agent-optimize"'
+      variables:
+        DEPLOYMENT_ENV: development
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "main"'
+      variables:
+        DEPLOYMENT_ENV: production
+      when: on_success
+    - when: never
+  image:
+    name: $DOCKER_URL/du/buildkit:v0.23.2
+  environment:
+    name: $DEPLOYMENT_ENV
+  variables:
+    BUILDKIT_CACHE_DIR: /var/lib/buildkit
+    DOCKER_REPO: agent-support
+    GIT_DEPTH: 1
+    # Gitlab workaround with issue https://gitlab.com/gitlab-org/gitlab-foss/-/issues/45173#note_829585763
+  before_script:
+    - mkdir -p ~/.docker
+    - echo "{\"auths\":{\"$DOCKER_URL\":{\"username\":\"robot\$$DOCKER_USERNAME\",\"password\":\"$DOCKER_PASSWORD\"}}}" > ~/.docker/config.json
+  script:
+    - cd agentsupporter
+    - |
+      buildctl --addr $BUILDKIT_HOST build  \
+        --frontend dockerfile.v0 \
+        --local context=. \
+        --local dockerfile=. \
+        --opt filename=./Dockerfile.optimize \
+        --output type=image,name=$DOCKER_URL/$DOCKER_PROJECT/$DOCKER_REPO:$SEM_VERSION,push=true \
+        --output type=image,name=$DOCKER_URL/$DOCKER_PROJECT/$DOCKER_REPO:latest,push=true
+  tags:
+    - kubernetes
+
+Deploy Agent Supporter Via SSH:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develop" || $CI_COMMIT_BRANCH == "feat/agent-optimize"'
+      when: on_success
+      variables:
+        DEPLOYMENT_ENV: development
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"'
+      when: on_success
+      variables:
+        DEPLOYMENT_ENV: production
+    - when: never
+  stage: ssh_deploy
+  variables:
+    GIT_STRATEGY: none
+    APP_DIR: /srv/bridgeo/agent_support
+  image:
+    name: $DOCKER_URL/du/git:latest
+    entrypoint: [""]
+  environment:
+    name: $DEPLOYMENT_ENV
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "${SSH_PRIVATE_KEY}" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan git.volcanly.me >> ~/.ssh/known_hosts
+    - echo "StrictHostKeyChecking no" >> ~/.ssh/config
+    - chmod 644 ~/.ssh/known_hosts
+    - echo "Checking for any ENV files"
+  script:
+    - |
+      if [ -n "$ENV_AGENT_SUPPORT" ] && [ -f "$ENV_AGENT_SUPPORT" ]; then
+        echo "ENV file found, Copying it to the server"
+        cp $ENV_AGENT_SUPPORT .env
+        scp .env $SERVER_USER@$SERVER_IP:$APP_DIR
+      else
+        echo "No ENV file found, skipping"
+      fi
+    - ssh $SERVER_USER@$SERVER_IP "cd $APP_DIR && bash ./up.sh $SEM_VERSION"
+  tags:
+    - $DEPLOY_TAG
