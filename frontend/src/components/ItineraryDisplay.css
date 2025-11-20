@@ -1,0 +1,339 @@
+.itinerary-container {
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.itinerary-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  padding: 24px 48px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+}
+
+.back-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+}
+
+.back-button:hover {
+  background: var(--bg-secondary);
+  transform: translateX(-2px);
+}
+
+.itinerary-header-content {
+  flex: 1;
+}
+
+.itinerary-header-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.8px;
+}
+
+.itinerary-header-content p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.itinerary-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.action-button {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-button:hover {
+  background: var(--bg-secondary);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.itinerary-content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 64px 48px;
+}
+
+.itinerary-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.summary-card {
+  padding: 24px;
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.summary-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.summary-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.itinerary-section {
+  margin-bottom: 64px;
+}
+
+.itinerary-section h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 32px 0;
+  letter-spacing: -1px;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 28px;
+}
+
+.recommendation-card {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px var(--shadow);
+  border-color: var(--accent);
+}
+
+.card-image {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.recommendation-card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.card-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.card-header h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  flex: 1;
+  letter-spacing: -0.3px;
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.card-rating .star-filled {
+  color: #ff9500;
+}
+
+.card-rating .star-empty {
+  color: var(--border);
+}
+
+.card-rating span {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.card-description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  flex: 1;
+}
+
+.card-highlight {
+  padding: 10px 14px;
+  background: rgba(0, 113, 227, 0.1);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--accent);
+  border-left: 3px solid var(--accent);
+}
+
+.card-highlight strong {
+  font-weight: 600;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.card-location,
+.card-duration {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.card-price {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.card-link:hover {
+  color: var(--accent-hover);
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .itinerary-header {
+    padding: 20px 24px;
+    flex-wrap: wrap;
+  }
+
+  .itinerary-header-content h1 {
+    font-size: 22px;
+  }
+
+  .itinerary-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .action-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .itinerary-content {
+    padding: 40px 24px;
+  }
+
+  .itinerary-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .itinerary-section h2 {
+    font-size: 26px;
+    margin-bottom: 28px;
+  }
+
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
